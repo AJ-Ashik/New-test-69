@@ -1,0 +1,14 @@
+{
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/auth.js"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/$1.html"
+    }
+  ]
+}
