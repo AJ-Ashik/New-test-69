@@ -1,30 +1,18 @@
 const express = require('express');
-const https = require('https');
+const fetch = require('node-fetch');
 const app = express();
 
-app.get('/api/channels', (req, res) => {
-    const url = 'https://raw.githubusercontent.com/AJ-Ashik/Assets/main/iptv.json'; // Replace with your JSON URL
-
-    https.get(url, (response) => {
-        let data = '';
-
-        // A chunk of data has been received.
-        response.on('data', (chunk) => {
-            data += chunk;
-        });
-
-        // The whole response has been received.
-        response.on('end', () => {
-            try {
-                const channels = JSON.parse(data);
-                res.json(channels);
-            } catch (error) {
-                res.status(500).json({ error: 'Failed to parse JSON' });
-            }
-        });
-    }).on('error', (err) => {
+app.get('/api/channels', async (req, res) => {
+    try {
+        const response = await fetch('https://raw.githubusercontent.com/AJ-Ashik/Assets/main/iptv.json'); // Replace with your JSON URL
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const channels = await response.json();
+        res.json(channels);
+    } catch (error) {
         res.status(500).json({ error: 'Failed to load channels' });
-    });
+    }
 });
 
 const port = process.env.PORT || 3000;
